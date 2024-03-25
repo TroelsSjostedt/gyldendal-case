@@ -93,7 +93,7 @@ function App() {
               {showPencil && (
                 <img
                   className="pointer-events-none absolute right-8 top-2"
-                  src="/blyant.png"
+                  src="/Blyant.png"
                   alt="Pencil"
                 />
               )}
