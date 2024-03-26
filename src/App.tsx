@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 import { ApiHandler, Problem } from './apiHandler'
 import parse from 'html-react-parser'
+import pencil from './assets/Pencil.png'
+import { ReactComponent as RightAnswer } from './assets/Validations/Right answer.svg'
+import { ReactComponent as WrongAnswer } from './assets/Validations/Wrong answer.svg'
+import { ReactComponent as Retry } from './assets/Arrows/Retry.svg'
+import { ReactComponent as NextTask } from './assets/Arrows/Next task.svg'
 
 const apiHandler = new ApiHandler()
 
@@ -60,6 +65,7 @@ function App() {
         setGuess('')
         setShowPencil(true)
         setState('first guess')
+        break
     }
   }
 
@@ -93,19 +99,33 @@ function App() {
               {showPencil && (
                 <img
                   className="pointer-events-none absolute right-8 top-2"
-                  src="/Blyant.png"
+                  src={pencil}
                   alt="Pencil"
                 />
+              )}
+              {state === 'right' && (
+                <RightAnswer className="pointer-events-none absolute right-3 top-2" />
+              )}
+              {state === 'wrong' && (
+                <WrongAnswer className="pointer-events-none absolute right-3 top-2" />
               )}
             </div>
             <div>{problem?.problemText.split('{{input0}}')[1]}</div>
           </div>
           <button
-            className={`border ${state === 'wrong' ? 'border-red-600' : state === 'right' ? 'border-green-600' : 'border-yellow-600'} mt-2 w-48 ${guess !== '' && 'hover:border-2'} ${guess === '' && 'border-gray-300 text-gray-300'}`}
+            className={`flex flex-col border ${state === 'wrong' ? 'border-red-600' : state === 'right' ? 'border-green-600' : 'border-yellow-600'} mt-2 w-48 ${guess !== '' && 'hover:border-2'} ${guess === '' && 'border-gray-300 text-gray-300'}`}
             disabled={guess === ''}
             onClick={ctaClicked}
           >
-            {ctaText}
+            <div className="flex self-center">
+              {ctaText}
+              {state === 'wrong' && (
+                <Retry className="pointer-events-none ml-3 self-center" />
+              )}
+              {state === 'right' && (
+                <NextTask className="pointer-events-none ml-3 self-center" />
+              )}
+            </div>
           </button>
         </div>
       ) : (
