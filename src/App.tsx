@@ -20,6 +20,7 @@ function App() {
   const [problem, setProblem] = useState<Problem>()
   const [ctaText, setCtaText] = useState('Tjek mit svar')
   const [guess, setGuess] = useState('')
+  const [inputFocussed, setInputFocussed] = useState(false)
   const [showPencil, setShowPencil] = useState(true)
   const [state, setState] = useState<
     'first guess' | 'second guess' | 'right' | 'wrong'
@@ -48,8 +49,12 @@ function App() {
     }
   }, [state])
 
-  const ctaClicked = () => {
-    console.log('CTA Clicked:', state)
+  // Show pencil icon when input is empty and doesn't have focus
+  useEffect(() => {
+    setShowPencil(!inputFocussed && guess === '')
+  }, [guess, inputFocussed])
+
+  function checkAnswerAndUpdateState() {
     switch (state) {
       case 'first guess':
         if (guess) {
@@ -70,18 +75,18 @@ function App() {
       case 'right':
       case 'wrong':
         setGuess('')
-        setShowPencil(true)
         setState('first guess')
         break
     }
   }
 
-  const onInputFocus = (e: any) => {
-    setShowPencil(false)
+  const ctaClicked = () => {
+    console.log('CTA Clicked:', state)
+    checkAnswerAndUpdateState()
   }
 
-  const onInputBlur = (e: any) => {
-    setShowPencil(guess === '')
+  const onInputKeyUp = (e: any) => {
+    if (e.key === 'Enter') checkAnswerAndUpdateState()
   }
 
   return (
@@ -133,8 +138,9 @@ function App() {
                     type="text"
                     className={`shadow-inner-dark ml-2 mr-1 h-9 w-24 rounded border-2 px-2 focus:border-2 ${state === 'first guess' ? 'border-gray-600' : state === 'right' ? 'border-green-600' : 'border-red-600'}`}
                     onChange={(e) => setGuess(e.target.value)}
-                    onFocus={onInputFocus}
-                    onBlur={onInputBlur}
+                    onFocus={() => setInputFocussed(true)}
+                    onBlur={() => setInputFocussed(false)}
+                    onKeyUp={onInputKeyUp}
                   />
                   {showPencil && (
                     <img
