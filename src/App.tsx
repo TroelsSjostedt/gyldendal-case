@@ -48,7 +48,7 @@ function App() {
     }
   }, [state])
 
-  function checkAnswer() {
+  function checkAnswer(inputFocussed: boolean) {
     switch (state) {
       case 'first guess':
         if (guess) {
@@ -69,7 +69,7 @@ function App() {
       case 'right':
       case 'wrong':
         setGuess('')
-        setShowPencil(true)
+        if (!inputFocussed) setShowPencil(true)
         setState('first guess')
         break
     }
@@ -77,7 +77,7 @@ function App() {
 
   const ctaClicked = () => {
     console.log('CTA Clicked:', state)
-    checkAnswer()
+    checkAnswer(false)
   }
 
   const onInputFocus = (e: any) => {
@@ -89,7 +89,7 @@ function App() {
   }
 
   const onInputKeyUp = (e: any) => {
-    if (e.key === 'Enter') checkAnswer()
+    if (e.key === 'Enter') checkAnswer(true)
   }
 
   return (
