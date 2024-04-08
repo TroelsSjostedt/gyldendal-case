@@ -48,8 +48,7 @@ function App() {
     }
   }, [state])
 
-  const ctaClicked = () => {
-    console.log('CTA Clicked:', state)
+  function checkAnswer() {
     switch (state) {
       case 'first guess':
         if (guess) {
@@ -76,12 +75,21 @@ function App() {
     }
   }
 
+  const ctaClicked = () => {
+    console.log('CTA Clicked:', state)
+    checkAnswer()
+  }
+
   const onInputFocus = (e: any) => {
     setShowPencil(false)
   }
 
   const onInputBlur = (e: any) => {
     setShowPencil(guess === '')
+  }
+
+  const onInputKeyUp = (e: any) => {
+    if (e.key === 'Enter') checkAnswer()
   }
 
   return (
@@ -135,6 +143,7 @@ function App() {
                     onChange={(e) => setGuess(e.target.value)}
                     onFocus={onInputFocus}
                     onBlur={onInputBlur}
+                    onKeyUp={onInputKeyUp}
                   />
                   {showPencil && (
                     <img
