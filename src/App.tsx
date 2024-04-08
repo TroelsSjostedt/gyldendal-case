@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react'
 import { ApiHandler, Problem } from './apiHandler'
 import parse from 'html-react-parser'
-import pencil from './assets/Pencil.png'
-import { ReactComponent as RightAnswer } from './assets/Validations/Right answer.svg'
-import { ReactComponent as WrongAnswer } from './assets/Validations/Wrong answer.svg'
-import { ReactComponent as Retry } from './assets/Arrows/Retry.svg'
-import { ReactComponent as NextTask } from './assets/Arrows/Next task.svg'
+import {
+  ArrowNext,
+  ArrowRetry,
+  RightAnswer,
+  WrongAnswer,
+  DogCorrect,
+  DogCorrecting,
+  DogDefault,
+  DogFirstWrong,
+  DogSecondWrong,
+  pencil,
+} from './assets'
 
 const apiHandler = new ApiHandler()
 
@@ -78,55 +85,97 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="flex h-screen w-screen items-center justify-center bg-black">
       {problem ? (
-        <div className="flex flex-col">
-          <h1 className="text-l font-bold">{problem?.introText}</h1>
-          {problem && (
-            <div className="italic">{parse(problem.description)}</div>
-          )}
-          <div className="flex items-center">
-            <div>{problem?.problemText.split('{{input0}}')[0]}</div>
-            <div className="relative">
-              <input
-                value={guess}
-                type="text"
-                className={`ml-2 mr-1 h-9 w-20 rounded border px-1 shadow-inner focus:border-2 ${state === 'first guess' ? 'border-gray-600' : state === 'right' ? 'border-green-600' : 'border-red-600'}`}
-                onChange={(e) => setGuess(e.target.value)}
-                onFocus={onInputFocus}
-                onBlur={onInputBlur}
-              />
-              {showPencil && (
-                <img
-                  className="pointer-events-none absolute right-8 top-2"
-                  src={pencil}
-                  alt="Pencil"
-                />
-              )}
-              {state === 'right' && (
-                <RightAnswer className="pointer-events-none absolute right-3 top-2" />
-              )}
-              {state === 'wrong' && (
-                <WrongAnswer className="pointer-events-none absolute right-3 top-2" />
-              )}
-            </div>
-            <div>{problem?.problemText.split('{{input0}}')[1]}</div>
+        <div className="grid h-full max-h-[768px] w-full max-w-screen-lg grid-rows-3 bg-white p-12">
+          {/* Intro text */}
+          <div>
+            <h1 className="ml-4 mt-6 text-xl font-bold">
+              {problem?.introText}
+            </h1>
           </div>
-          <button
-            className={`flex flex-col border ${state === 'wrong' ? 'border-red-600' : state === 'right' ? 'border-green-600' : 'border-yellow-600'} mt-2 w-48 ${guess !== '' && 'hover:border-2'} ${guess === '' && 'border-gray-300 text-gray-300'}`}
-            disabled={guess === ''}
-            onClick={ctaClicked}
-          >
-            <div className="flex self-center">
-              {ctaText}
-              {state === 'wrong' && (
-                <Retry className="pointer-events-none ml-3 self-center" />
-              )}
-              {state === 'right' && (
-                <NextTask className="pointer-events-none ml-3 self-center" />
-              )}
+
+          {/* Question */}
+          <div className="flex items-center">
+            {/* Left space */}
+            <div className="grow-[2]" />
+
+            {/* Dog */}
+            <div>
+              {state === 'first guess' && <DogDefault />}
+              {state === 'second guess' && <DogFirstWrong />}
+              {state === 'wrong' && <DogSecondWrong />}
+              {state === 'right' && <DogCorrect />}
             </div>
-          </button>
+
+            {/* Task */}
+            <div className="ml-6 text-xl">
+              <div className="relative">
+                <svg viewBox="0 0 210 30">
+                  {/* Todo: Improve speech bubble adding rounded corners and dynamic width */}
+                  <path
+                    d="M6 2 H200 V28 H6 V19 L0 15 L6 11 Z"
+                    className="fill-transparent stroke-blue-600 stroke-1"
+                  ></path>
+                </svg>
+
+                <div className="absolute left-8 top-5 mb-8 italic">
+                  {parse(problem.description)}
+                </div>
+              </div>
+
+              <div className="ml-6 mt-4 flex items-center">
+                <div>{problem?.problemText.split('{{input0}}')[0]}</div>
+                <div className="relative">
+                  {/* shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] */}
+                  <input
+                    value={guess}
+                    type="text"
+                    className={`shadow-inner-dark ml-2 mr-1 h-9 w-24 rounded border-2 px-2 focus:border-2 ${state === 'first guess' ? 'border-gray-600' : state === 'right' ? 'border-green-600' : 'border-red-600'}`}
+                    onChange={(e) => setGuess(e.target.value)}
+                    onFocus={onInputFocus}
+                    onBlur={onInputBlur}
+                  />
+                  {showPencil && (
+                    <img
+                      className="pointer-events-none absolute right-[42px] top-2"
+                      src={pencil}
+                      alt="Pencil"
+                    />
+                  )}
+                  {state === 'right' && (
+                    <RightAnswer className="pointer-events-none absolute right-3 top-2" />
+                  )}
+                  {state === 'wrong' && (
+                    <WrongAnswer className="pointer-events-none absolute right-3 top-2" />
+                  )}
+                </div>
+                <div>{problem?.problemText.split('{{input0}}')[1]}</div>
+              </div>
+            </div>
+
+            {/* Right space */}
+            <div className="grow" />
+          </div>
+
+          {/* Check answer */}
+          <div className="flex flex-col items-center justify-end">
+            <button
+              className={`mb-8 flex cursor-pointer flex-col rounded-[4px] border-2 py-2 shadow-md disabled:cursor-default ${state === 'wrong' ? 'border-red-600' : state === 'right' ? 'border-green-600' : 'border-yellow-600'} mt-2 w-48 ${guess !== '' && 'hover:border-2'} ${guess === '' && 'border-gray-300 text-gray-300'}`}
+              disabled={guess === ''}
+              onClick={ctaClicked}
+            >
+              <div className="flex self-center font-bold">
+                {ctaText}
+                {state === 'wrong' && (
+                  <ArrowRetry className="pointer-events-none ml-3 self-center" />
+                )}
+                {state === 'right' && (
+                  <ArrowNext className="pointer-events-none ml-3 self-center" />
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       ) : (
         <div>Indlæser...</div>
