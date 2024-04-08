@@ -7,7 +7,6 @@ import {
   RightAnswer,
   WrongAnswer,
   DogCorrect,
-  DogCorrecting,
   DogDefault,
   DogFirstWrong,
   DogSecondWrong,
@@ -95,8 +94,8 @@ function App() {
         <div className="grid h-full max-h-[768px] w-full max-w-screen-lg grid-rows-3 bg-white p-12">
           {/* Intro text */}
           <div>
-            <h1 className="ml-4 mt-6 text-xl font-bold">
-              {problem?.introText}
+            <h1 data-test="intro-text" className="ml-4 mt-6 text-xl font-bold">
+              {problem.introText}
             </h1>
           </div>
 
@@ -107,10 +106,12 @@ function App() {
 
             {/* Dog */}
             <div>
-              {state === 'first guess' && <DogDefault />}
-              {state === 'second guess' && <DogFirstWrong />}
-              {state === 'wrong' && <DogSecondWrong />}
-              {state === 'right' && <DogCorrect />}
+              {state === 'first guess' && <DogDefault data-test="dog-first" />}
+              {state === 'second guess' && (
+                <DogFirstWrong data-test="dog-second" />
+              )}
+              {state === 'wrong' && <DogSecondWrong data-test="dog-wrong" />}
+              {state === 'right' && <DogCorrect data-test="dog-right" />}
             </div>
 
             {/* Task */}
@@ -130,10 +131,10 @@ function App() {
               </div>
 
               <div className="ml-6 mt-4 flex items-center">
-                <div>{problem?.problemText.split('{{input0}}')[0]}</div>
+                <div>{problem.problemText.split('{{input0}}')[0]}</div>
                 <div className="relative">
-                  {/* shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] */}
                   <input
+                    data-test="answer-input"
                     value={guess}
                     type="text"
                     className={`shadow-inner-dark ml-2 mr-1 h-9 w-24 rounded border-2 px-2 focus:border-2 ${state === 'first guess' ? 'border-gray-600' : state === 'right' ? 'border-green-600' : 'border-red-600'}`}
@@ -144,19 +145,26 @@ function App() {
                   />
                   {showPencil && (
                     <img
+                      data-test="pencil-icon"
                       className="pointer-events-none absolute right-[42px] top-2"
                       src={pencil}
                       alt="Pencil"
                     />
                   )}
                   {state === 'right' && (
-                    <RightAnswer className="pointer-events-none absolute right-3 top-2" />
+                    <RightAnswer
+                      data-test="input-right"
+                      className="pointer-events-none absolute right-3 top-[7px]"
+                    />
                   )}
                   {state === 'wrong' && (
-                    <WrongAnswer className="pointer-events-none absolute right-3 top-2" />
+                    <WrongAnswer
+                      data-test="input-wrong"
+                      className="pointer-events-none absolute right-3 top-[7px]"
+                    />
                   )}
                 </div>
-                <div>{problem?.problemText.split('{{input0}}')[1]}</div>
+                <div>{problem.problemText.split('{{input0}}')[1]}</div>
               </div>
             </div>
 
@@ -167,6 +175,7 @@ function App() {
           {/* Check answer */}
           <div className="flex flex-col items-center justify-end">
             <button
+              data-test="check-button"
               className={`mb-8 flex cursor-pointer flex-col rounded-[4px] border-2 py-2 shadow-md disabled:cursor-default ${state === 'wrong' ? 'border-red-600' : state === 'right' ? 'border-green-600' : 'border-yellow-600'} mt-2 w-48 ${guess !== '' && 'hover:border-2'} ${guess === '' && 'border-gray-300 text-gray-300'}`}
               disabled={guess === ''}
               onClick={ctaClicked}
@@ -174,17 +183,25 @@ function App() {
               <div className="flex self-center font-bold">
                 {ctaText}
                 {state === 'wrong' && (
-                  <ArrowRetry className="pointer-events-none ml-3 self-center" />
+                  <ArrowRetry
+                    data-test="button-retry"
+                    className="pointer-events-none ml-3 self-center"
+                  />
                 )}
                 {state === 'right' && (
-                  <ArrowNext className="pointer-events-none ml-3 self-center" />
+                  <ArrowNext
+                    data-test="button-next"
+                    className="pointer-events-none ml-3 self-center"
+                  />
                 )}
               </div>
             </button>
           </div>
         </div>
       ) : (
-        <div>Indlæser...</div>
+        <div data-test="loading" className="text-white">
+          Indlæser...
+        </div>
       )}
     </div>
   )
