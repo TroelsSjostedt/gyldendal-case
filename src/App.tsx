@@ -137,7 +137,7 @@ function App() {
                     data-test="answer-input"
                     value={guess}
                     type="text"
-                    className={`shadow-inner-dark ml-2 mr-1 h-9 w-24 rounded border-2 px-2 focus:border-2 ${state === 'first guess' ? 'border-gray-600' : state === 'right' ? 'border-green-600' : 'border-red-600'}`}
+                    className={`shadow-inner-dark ml-2 mr-1 h-9 w-24 rounded border-2 px-2 focus:border-2 ${state === 'first guess' ? 'border-gray-600' : state === 'right' ? 'border-green-600 bg-green-100' : state === 'wrong' ? 'border-red-600 bg-red-100' : 'border-red-600'}`}
                     onChange={(e) => setGuess(e.target.value)}
                     onFocus={() => setInputFocussed(true)}
                     onBlur={() => setInputFocussed(false)}
