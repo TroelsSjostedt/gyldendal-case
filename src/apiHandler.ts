@@ -1,5 +1,4 @@
-const baseURL =
-  'https://glkltp5rvo76hkmz4fraevhshu0yluco.lambda-url.eu-central-1.on.aws'
+const baseURL = process.env.REACT_APP_API
 
 export interface Problem {
   id: number
