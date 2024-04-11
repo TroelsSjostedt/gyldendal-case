@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { ApiHandler, Problem } from './apiHandler'
 import parse from 'html-react-parser'
 import {
-  ArrowNext,
-  ArrowRetry,
   RightAnswer,
   WrongAnswer,
   DogCorrect,
@@ -12,12 +10,12 @@ import {
   DogSecondWrong,
   pencil,
 } from './assets'
+import { Button } from './Button'
 
 const apiHandler = new ApiHandler()
 
 function App() {
   const [problem, setProblem] = useState<Problem>()
-  const [ctaText, setCtaText] = useState('Tjek mit svar')
   const [guess, setGuess] = useState('')
   const [inputFocussed, setInputFocussed] = useState(false)
   const [showPencil, setShowPencil] = useState(true)
@@ -29,24 +27,6 @@ function App() {
     // Get problem when loading app
     apiHandler.getProblem().then((p) => setProblem(p))
   }, [])
-
-  useEffect(() => {
-    console.log('New state:', state)
-    switch (state) {
-      case 'first guess':
-        setCtaText('Tjek mit svar')
-        break
-      case 'second guess':
-        setCtaText('Tjek mit svar')
-        break
-      case 'right':
-        setCtaText('Næste opgave')
-        break
-      case 'wrong':
-        setCtaText('Prøv igen')
-        break
-    }
-  }, [state])
 
   // Show pencil icon when input is empty and doesn't have focus
   useEffect(() => {
@@ -174,28 +154,11 @@ function App() {
 
           {/* Check answer */}
           <div className="flex flex-col items-center justify-end">
-            <button
-              data-test="check-button"
-              className={`mb-8 flex cursor-pointer flex-col rounded-[4px] border-2 py-2 shadow-md disabled:cursor-default ${state === 'wrong' ? 'border-red-600' : state === 'right' ? 'border-green-600' : 'border-yellow-600'} mt-2 w-48 ${guess !== '' && 'hover:border-2'} ${guess === '' && 'border-gray-300 text-gray-300'}`}
+            <Button
+              state={state}
               disabled={guess === ''}
               onClick={ctaClicked}
-            >
-              <div className="flex self-center font-bold">
-                {ctaText}
-                {state === 'wrong' && (
-                  <ArrowRetry
-                    data-test="button-retry"
-                    className="pointer-events-none ml-3 self-center"
-                  />
-                )}
-                {state === 'right' && (
-                  <ArrowNext
-                    data-test="button-next"
-                    className="pointer-events-none ml-3 self-center"
-                  />
-                )}
-              </div>
-            </button>
+            />
           </div>
         </div>
       ) : (
